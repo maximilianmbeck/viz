@@ -18,7 +18,7 @@ The notebook was originally created for the publication REF.
 
 ## Presenting Data with Tables and Plots in Notebooks
 
-In the module [data_viz](data_viz/) I show a good practice for visualization of tabular data in Jupyter notebooks. It is also a good example how to your code for data preprocessing and plotting separated and thus modular. Just have a look at the notebook [data_viz_nb.ipynb](data_viz/data_viz_nb.ipynb).
+In the module [data_viz](data_viz/) I my best practice for visualization of tabular data in Jupyter notebooks. It is also a good example of how to keep your code for data preprocessing and plotting separated and thus modular. Just have a look at the notebook [data_viz_nb.ipynb](data_viz/data_viz_nb.ipynb).
 
 The code was originally created for the publication REF.
 

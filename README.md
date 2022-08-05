@@ -24,3 +24,8 @@ The code was originally created for our publication [Ensemble Learning for Domai
 
 <img src="res/moons_iwa_accuracy_and_ensemble_weights.png" alt="Accuracy in combination with other information." width="300"/> 
 <img src="res/moons_iwa_accuracy.png" alt="Gradient Descent Matplotlib 2D/3D" width="600"/>
+
+## Useful References for Creating Nice Plots
+
+- TUEPlot Library: Helps you to create scientific plots for papers. See [Github](https://github.com/pnkraemer/tueplots) and [Documentation](https://tueplots.readthedocs.io/en/stable/index.html).
+  

@@ -33,8 +33,8 @@ def _get_style(type, distr):
         col = '#f59393'
         lw = 4
     elif type == 'source_reg' and distr == 'target':
-        label = 'Source-only regression target'
-        col = 'grey'
+        label = 'SOR target'  #'Source-only regression target'
+        col = '#08737f'  #darkblue: '#2a4858' #'blue'
         lw = 4
     elif type == 'dev' and distr == 'target':
         label = 'DEV target'
@@ -61,11 +61,18 @@ def _get_style(type, distr):
 
 # Plotting functions:
 
-def paperplot_lambdas_vs_accuracy_barplot(
-        df_acc: pd.DataFrame, df_ew: pd.DataFrame, domains: List[str] = [],
-        lambdas: List[str] = [],
-        ensemble_methods: List[str] = [],
-        title=None, style=None, cmap='Greys', bar_width=0.7, ax=None, figsize=(2 * 12 * 1 / 2.54, 2 * 8 * 1 / 2.54)):
+
+def paperplot_lambdas_vs_accuracy_barplot(df_acc: pd.DataFrame,
+                                          df_ew: pd.DataFrame,
+                                          domains: List[str] = [],
+                                          lambdas: List[str] = [],
+                                          ensemble_methods: List[str] = [],
+                                          title=None,
+                                          style=None,
+                                          cmap='Greys',
+                                          bar_width=0.7,
+                                          ax=None,
+                                          figsize=(2 * 12 * 1 / 2.54, 2 * 8 * 1 / 2.54)):
     # get domains
     if not domains:
         domains = list(df_acc.index.get_level_values('domains').unique())
@@ -116,12 +123,17 @@ def paperplot_lambdas_vs_accuracy_barplot(
                 marker = style[d].get('marker', marker)
 
             # axs[0].plot(val, ls=ls, label=label, c=col, marker=marker)
-            axs[0].errorbar(x=np.arange(len(val)), y=val, yerr=std, fmt='none', marker=marker,
-                            ls=None, c='black', capsize=4)
+            axs[0].errorbar(x=np.arange(len(val)),
+                            y=val,
+                            yerr=std,
+                            fmt='none',
+                            marker=marker,
+                            ls=None,
+                            c='black',
+                            capsize=4)
 
             norm = mpl.colors.Normalize(vmin=np.min(val_ew), vmax=np.max(val_ew))
-            axs[0].bar(x=np.arange(len(val)), height=val,
-                       width=bar_width, color=my_cmap(norm(val_ew)))
+            axs[0].bar(x=np.arange(len(val)), height=val, width=bar_width, color=my_cmap(norm(val_ew)))
 
             # plot accuracy of ensemble methods only aggregation method is left in dataframe
             vals_acc = domain_df_acc_ems.swaplevel().loc[domain]
@@ -131,15 +143,15 @@ def paperplot_lambdas_vs_accuracy_barplot(
             std = vals_acc.std(axis=0)
             lower, upper = val - std, val + std
 
-            xs = np.zeros(len(lambdas)+2)
-            xs[0] = -bar_width/2
-            xs[1:len(lambdas)+1] = np.arange(len(lambdas))
-            xs[-1] = len(lambdas)-1+bar_width/2
+            xs = np.zeros(len(lambdas) + 2)
+            xs[0] = -bar_width / 2
+            xs[1:len(lambdas) + 1] = np.arange(len(lambdas))
+            xs[-1] = len(lambdas) - 1 + bar_width / 2
 
             for j, em in enumerate(vals_acc.columns):
-                v = val[em] * np.ones(len(lambdas)+2)
-                l = lower[em] * np.ones(len(lambdas)+2)
-                u = upper[em] * np.ones(len(lambdas)+2)
+                v = val[em] * np.ones(len(lambdas) + 2)
+                l = lower[em] * np.ones(len(lambdas) + 2)
+                u = upper[em] * np.ones(len(lambdas) + 2)
 
                 ls, lw, col, label, marker = _get_style(em, domain)
                 if style is not None and d in style.keys():
@@ -164,13 +176,19 @@ def paperplot_lambdas_vs_accuracy_barplot(
     axs[0].get_figure().autofmt_xdate()
     return f
 
-def paperplot2_lambdas_vs_accuracy_vs_ensemble_weights_bars(df_acc: pd.DataFrame, df_ew: pd.DataFrame, domains: List[str] = [], lambdas: List[str] = [], 
-                                                  ensemble_methods: List[str] = ['agg', 'source_reg'],
-                                                  title=None,
-                                                  alpha=0.2,
-                                                  bar_width=0.7,
-                                                  plot_errorbars=False,
-                                                  figsize=(2 * 12 * 1 / 2.54, 2 * 12 * 1 / 2.54)):
+
+def paperplot2_lambdas_vs_accuracy_vs_ensemble_weights_bars(df_acc: pd.DataFrame,
+                                                            df_ew: pd.DataFrame,
+                                                            domains: List[str] = [],
+                                                            lambdas: List[str] = [],
+                                                            ensemble_methods: List[str] = ['agg', 'source_reg'],
+                                                            title=None,
+                                                            alpha=0.2,
+                                                            bar_width=0.7,
+                                                            plot_errorbars=False,
+                                                            rescale_weights=True,
+                                                            ylim=None,
+                                                            figsize=(2 * 12 * 1 / 2.54, 2 * 12 * 1 / 2.54)):
     # get domains
     if not domains:
         domains = list(df_acc.index.get_level_values('domains').unique())
@@ -195,7 +213,8 @@ def paperplot2_lambdas_vs_accuracy_vs_ensemble_weights_bars(df_acc: pd.DataFrame
             raise ValueError('No ensemble methods in dataframe!')
 
     xs = np.arange(len(lambdas))
-    plt.setp(axs[0], xticks=xs, xticklabels=[float(l) for l in lambdas])  
+    # plt.setp(axs[0], xticks=xs, xticklabels=[float(l) for l in lambdas])
+    plt.setp(axs[0], xticks=xs, xticklabels=['' for l in lambdas])  
     for i, d in enumerate(domains):
         domain_df_lambdas = df_acc.loc[d][lambdas]
         domain_df_ems = df_acc.loc[d][ensemble_methods]
@@ -209,7 +228,7 @@ def paperplot2_lambdas_vs_accuracy_vs_ensemble_weights_bars(df_acc: pd.DataFrame
 
             ls, lw, col, label, marker = _get_style(d, domain)
 
-            axs[0].plot(val, ls=ls, label=label, c=col, marker=marker, lw=lw, ms=2.5*lw)
+            axs[0].plot(val, ls=ls, label=label, c=col, marker=marker, lw=lw, ms=2.5 * lw)
             if plot_errorbars:
                 axs[0].fill_between(x=xs, y1=lower, y2=upper, color=col, alpha=alpha)
 
@@ -225,7 +244,6 @@ def paperplot2_lambdas_vs_accuracy_vs_ensemble_weights_bars(df_acc: pd.DataFrame
                 std = vals.std(axis=0)
                 lower, upper = val - std, val + std
 
-
                 # plot every ensemble method
                 for j, em in enumerate(vals.columns):
                     v = val[em] * np.ones(len(lambdas))
@@ -236,33 +254,47 @@ def paperplot2_lambdas_vs_accuracy_vs_ensemble_weights_bars(df_acc: pd.DataFrame
 
                     # axs[0].errorbar(x=-0.3 - j * 0.3, y=val[em], yerr=std[em], marker=marker,
                     #                 ls=ls, c=col, label=label, linewidth=lw, capsize=4)
-                    axs[0].plot(xs,v, ls=ls, label=label, c=col, marker=marker, lw=lw)
+                    axs[0].plot(xs, v, ls=ls, label=label, c=col, marker=marker, lw=lw)
                     if plot_errorbars:
                         axs[0].fill_between(x=xs, y1=l, y2=u, color=col, alpha=alpha)
 
-    
-    bar_width = 1. / (len(ensemble_methods)+1)
+    bar_width = 1. / (len(ensemble_methods) + 1)
     ind = np.arange(len(lambdas))
 
     for i, d in enumerate(domains):
-        domain_df_lambdas = df_ew.swaplevel(0,1).loc[d][lambdas]
+        domain_df_ew_lambdas = df_ew.swaplevel(0,1).loc[d][lambdas]
+        domain_df_mean_ew_lambdas = domain_df_ew_lambdas.groupby(level='ensemble_methods').mean()
+        domain_df_std_ew_lambdas = domain_df_ew_lambdas.groupby(level='ensemble_methods').std()
+        if rescale_weights:
+            max_abs_vals = domain_df_mean_ew_lambdas.abs().max(axis=1)
+            domain_df_mean_ew_lambdas = domain_df_mean_ew_lambdas.divide(max_abs_vals, axis=0)
+            domain_df_std_ew_lambdas = domain_df_std_ew_lambdas.divide(max_abs_vals, axis=0)
+
         for j, em in enumerate(ensemble_methods):
             # plot ensemble weights
-            vals = domain_df_lambdas.swaplevel(0,1).loc[em]
-            val = vals.mean(axis=0)
-            std = vals.std(axis=0)
+            vals = domain_df_mean_ew_lambdas.loc[em]
+            val = vals
+            std = domain_df_std_ew_lambdas.loc[em]
+            # rescale: divide each row by its respective max value
+            # makes all weights to be in the same plotable scale
             lower, upper = val - std, val + std
             ls, lw, col, label, marker = _get_style(em, 'target')
             axs[1].bar(ind+(j*bar_width), val, bar_width, label=em, align='center', color=col)
 
 
-    axs[1].set_xlabel(r'$\lambda$')
+    # axs[1].set_xlabel(r'$\lambda$')
+    axs[1].set_xlabel(r'Models')
     axs[0].set_ylabel('Accuracy')
-    axs[1].set_ylabel('Ensemble weights')
-    axs[0].legend(loc=1, prop={'size':13})
-    axs[0].set_ylim(0.75,1)
+    axs[1].set_ylabel('Scaled Avg.\nAggregation weights')
+    axs[0].legend(loc=0, prop={'size':11.5})
+    if ylim:
+        axs[0].set_ylim(*ylim)
+    else:
+        axs[0].set_ylim(0,1) # 0.75,1
     axs[1].set_yticks([1.0,0,-1.0])
     # axs[1].set_yscale('log')
+    axs[0].set_xlim(-0.5, 13.5)
+    axs[1].set_xlim(-0.5, 13.5)
 
     _ = plt.tight_layout()
     axs[0].get_figure().autofmt_xdate()

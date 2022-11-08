@@ -28,4 +28,4 @@ The code was originally created for our publication [Ensemble Learning for Domai
 ## Useful References for Creating Nice Plots
 
 - TUEPlot Library: Helps you to create scientific plots for papers. See [Github](https://github.com/pnkraemer/tueplots) and [Documentation](https://tueplots.readthedocs.io/en/stable/index.html).
-  
+- dataframe-image: Create .png or .pdf files from for pandas dataframe outputs in jupyter notebooks. See [Github](https://github.com/dexplo/dataframe_image) and [PyPi](https://pypi.org/project/dataframe-image/)

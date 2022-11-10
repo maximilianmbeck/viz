@@ -25,7 +25,18 @@ The code was originally created for our publication [Ensemble Learning for Domai
 <img src="res/moons_iwa_accuracy_and_ensemble_weights.png" alt="Accuracy in combination with other information." width="300"/> 
 <img src="res/moons_iwa_accuracy.png" alt="Gradient Descent Matplotlib 2D/3D" width="600"/>
 
+### Tips for using Matplotlib with LaTex:
+In order to make matplotlib use tex internally [install Tex Live](https://www.tug.org/texlive/quickinstall.html), for e.g. in a user directory, i.e. `~/.texlive2021`.
+
+Add the following lines in a cell in the plotting jupyter notebook:
+```Python
+os.environ["PATH"] = "~/.texlive2021/bin/x86_64-linux" + os.pathsep + os.environ["PATH"] 
+
+rc('text', usetex=True) # this makes matplotlib use tex internally for plots
+```
+
 ## Useful References for Creating Nice Plots
 
 - TUEPlot Library: Helps you to create scientific plots for papers. See [Github](https://github.com/pnkraemer/tueplots) and [Documentation](https://tueplots.readthedocs.io/en/stable/index.html).
 - dataframe-image: Create .png or .pdf files from for pandas dataframe outputs in jupyter notebooks. See [Github](https://github.com/dexplo/dataframe_image) and [PyPi](https://pypi.org/project/dataframe-image/)
+- TeX Live with `rc('text', usetex=True)`: Make matplotlib plots with LaTex support. Install Tex Live by following [these instructions](https://www.tug.org/texlive/quickinstall.html).
